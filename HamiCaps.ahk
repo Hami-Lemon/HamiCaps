@@ -207,30 +207,34 @@ Return
 #IF caps_lock_down and caps_mode_enable
 ; j,l,k,i 移动光标
 ; 同时按下alt时，移动距离为2
-$j::
-    Send, {Left}
-Return
+; $j::
+;     Send, {Left}
+; Return
+$j::Left
 $!j::
     SendSuppressedKeyUp("Alt")
     Send, {Left 2}
 return
-$l::
-    Send, {right}
-Return
+; $l::
+;     Send, {right}
+; Return
+$l::Right
 $!l::
     SendSuppressedKeyUp("Alt")
     Send, {right 2}
 return
-$i::
-    Send, {up}
-Return
+; $i::
+;     Send, {up}
+; Return
+$i::Up
 $!i::
     SendSuppressedKeyUp("Alt")
     Send, {up 2}
 return
-$k::
-    Send, {down}
-Return
+; $k::
+;     Send, {down}
+; Return
+$k::Down
 $!k::
     SendSuppressedKeyUp("Alt")
     Send, {down 2}
@@ -248,21 +252,25 @@ $y::
     Send, {Home}+{End}{Delete}{BackSpace}
 Return
 ; pageup
-$[::
-    Send, {PgUP}
-Return
+; $[::
+;     Send, {PgUP}
+; Return
+$[::PgUp
 ; pagedown
-$]::
-    Send, {PgDn}
-Return
+; $]::
+;     Send, {PgDn}
+; Return
+$]::PgDn
 ; home
-$,::
-    Send, {Home}
-Return
+; $,::
+;     Send, {Home}
+; Return
+$,::Home
 ; end
-$.::
-    Send, {End}
-Return
+; $.::
+;     Send, {End}
+; Return
+$.::End
 ; ctrl + home
 $!,::
     SendSuppressedKeyUp("Alt")
@@ -274,9 +282,10 @@ $!.::
     Send, ^{End}
 Return
 ; insert
-$\::
-    Send, {Insert}
-Return
+; $\::
+;     Send, {Insert}
+; Return
+$\::Insert
 ; 不影响当前行回车
 $Enter::
     send, {End}{Enter}
@@ -295,13 +304,15 @@ $r::
     Send, ^a{Delete}
 Return
 ; delete
-$v::
-    Send, {Delete}
-Return
+; $v::
+;     Send, {Delete}
+; Return
+$v::Delete
 ; backspace
-$n::
-    Send, {BackSpace}
-Return
+; $n::
+;     Send, {BackSpace}
+; Return
+$n::BackSpace
 ; 显示程序菜单
 $g::
     Menu,Tray,Show
