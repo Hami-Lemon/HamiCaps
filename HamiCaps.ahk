@@ -7,7 +7,7 @@
 #NoTrayIcon
 #Persistent
 ; #Warn All,StdOut
-#Include, lib\util.ahk
+#Include, lib/util.ahk
 #InstallKeybdHook
 SendMode Input 
 SetWorkingDir %A_ScriptDir% 
@@ -39,17 +39,6 @@ show_hide_icon(){
         Menu, Tray, NoIcon
     }
 }
-; 退出程序
-exit_app(){
-    ExitApp, 0
-    Return
-}
-; 重载程序
-reload_app(){
-    Reload
-    Sleep, 1000
-    msgbox 重载失败
-}
 ; 改变CapsLock模式是否可用
 enable_disable_caps_mode(){
     global caps_mode_enable
@@ -72,7 +61,7 @@ switch_num_lock(){
         Menu, Tray, Check, 3&
     }else{
         tip("数字锁关闭")
-         ; 同时关闭严格数字锁
+        ; 同时关闭严格数字锁
         strict_num_lock:=0
         Menu, Tray, UnCheck, 3&
     }
@@ -87,58 +76,9 @@ switch_strict_num_lock(){
         num_lock:=1
         Menu, Tray, Check, 3&
     }else{
-         tip("关闭数字锁严格模式")
+        tip("关闭数字锁严格模式")
     }
     Return
-}
-; 鼠标上移
-mouse_up(speed){
-    if(GetKeyState("s","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, -%speed%, -%speed%, , R
-    }else if(GetKeyState("f","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, %speed%, -%speed% ,, R
-    }else{
-        MouseMove, 0, -%speed% , , R
-    }
-
-}
-mouse_left(speed){
-    if(GetKeyState("e","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, -%speed%, -%speed% , , R
-    }else if(GetKeyState("d","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, -%speed%, %speed% ,, R
-    }else{
-        MouseMove, -%speed%, 0 , , R
-    }
-
-}
-mouse_right(speed){
-    if(GetKeyState("e","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, %speed%, -%speed% , , R
-    }else if(GetKeyState("d","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, %speed%, %speed% ,, R
-    }else{
-        MouseMove, %speed%, 0 , , R
-    }
-
-}
-mouse_down(speed){
-    if(GetKeyState("s","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, -%speed%, %speed% , , R
-    }else if(GetKeyState("f","P")){
-        speed:=Ceil(speed*0.7)
-        MouseMove, %speed%, %speed% ,, R
-    }else{
-        MouseMove, 0, %speed% , , R
-    }
-
 }
 ; 检查是否开机自启
 check_start_poweron(){
@@ -172,6 +112,7 @@ Menu, Tray, NoMainWindow
 Menu, Tray, Tip, HamiCaps正在运行
 ; 功能启用子菜单
 Menu, status, add, 禁用Caps模式, enable_disable_caps_mode, +Radio
+
 Menu, Tray, add, 功能启用, :status
 Menu, Tray, add, 显或隐图标〔Win+Caps〕, show_hide_icon
 Menu, Tray, add, 开关数字锁〔Caps+/〕, switch_num_lock
@@ -205,6 +146,7 @@ CapsLock::
 Return
 
 #IF caps_lock_down and caps_mode_enable
+
 ; j,l,k,i 移动光标
 ; 同时按下alt时，移动距离为2
 ; $j::
@@ -395,92 +337,116 @@ $+1::
 Return
 $2::
     if(strict_num_lock){
-    Send, {Text}@
-}else{
-    Send, +2
-}
+        Send, {Text}@
+    }else{
+        Send, +2
+    }
 Return
 $+2::
     Send, {Blind}{Text}2
 Return
 $3::
     if(strict_num_lock){
-    Send, {Text}#
-}else{
-    Send, +3
-}
+        Send, {Text}#
+    }else{
+        Send, +3
+    }
 Return
 $+3::
     Send, {Blind}{Text}3
 Return
 $4::
     if(strict_num_lock){
-    Send, {Text}$
-}else{
-    Send, +4
-}
+        Send, {Text}$
+    }else{
+        Send, +4
+    }
 Return
 $+4::
     Send, {Blind}{Text}4
 Return
 $5::
     if(strict_num_lock){
-    Send, {Text}`%
-}else{
-    Send, +5
-}
+        Send, {Text}`%
+    }else{
+        Send, +5
+    }
 Return
 $+5::
     Send, {Blind}{Text}5
 Return
 $6::
     if(strict_num_lock){
-    Send, {Text}^
-}else{
-    Send, +6
-}
+        Send, {Text}^
+    }else{
+        Send, +6
+    }
 Return
 $+6::
     Send, {Blind}{Text}6
 Return
 $7::
     if(strict_num_lock){
-    Send, {Text}&
-}else{
-    Send, +7
-}
+        Send, {Text}&
+    }else{
+        Send, +7
+    }
 Return
 $+7::
     Send, {Blind}{Text}7
 Return
 $8::
     if(strict_num_lock){
-    Send, {Text}*
-}else{
-    Send, +8
-}
+        Send, {Text}*
+    }else{
+        Send, +8
+    }
 Return
 $+8::
     Send, {Blind}{Text}8
 Return
 $9::
     if(strict_num_lock){
-    Send, {Text}(
-}else{
-    Send, +9
-}
+        Send, {Text}(
+    }else{
+        Send, +9
+    }
 Return
 $+9::
     Send, {Blind}{Text}9
 Return
 $0::
     if(strict_num_lock){
-    Send, {Text})
-}else{
-    Send, +0
-}
+        Send, {Text})
+    }else{
+        Send, +0
+    }
 Return
 $+0::
     Send, {Blind}{Text}0
 Return
+#IF
+
+;;;;;;;; / 快捷命令 ;;;;;;;;;
+; / 是否按下
+i_click_down:=0
+$/::
+    i_click_down:=1
+    KeyWait, /
+    i_click_down:=0
+    if(A_ThisHotkey = "$/" and A_TimeSinceThisHotkey <= 300){
+        Send, {/}
+    }
+Return
+#IF i_click_down
+$c::Run CMD
+$e::Run explorer
+$b:: Run https://www.baidu.com
+$n:: Run notepad
+$m:: Run mspaint
+#IF
+;;;;;;;;鼠标停留在任务栏时，可使用滚轮调节音量;;;;;;;;;;
+#IF mouse_over_task()
+    $WheelUp::Volume_Up
+$WheelDown::Volume_Down
 #IF
