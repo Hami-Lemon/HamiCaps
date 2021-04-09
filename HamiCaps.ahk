@@ -6,7 +6,9 @@
 #SingleInstance, force
 #NoTrayIcon
 #Persistent
-; #Warn All,StdOut
+;@Ahk2Exe-IgnoreBegin
+#Warn All,StdOut
+;@Ahk2Exe-IgnoreEnd
 #Include, lib/util.ahk
 #InstallKeybdHook
 SendMode Input 
@@ -16,10 +18,7 @@ SetWorkingDir %A_ScriptDir%
 tray_icon:=1
 ; CapsLock是否被按下
 caps_lock_down:=0
-; 数字锁是否开启
-num_lock:=0
-; 严格数字锁，此模式下输入的符号强制为英文符号，且不受输入法影响
-strict_num_lock:=0
+
 ; capsLock模式是否可用
 caps_mode_enable:=1
 ; 鼠标单次移动距离（Caps+e,s,d,f)
@@ -34,9 +33,22 @@ show_hide_icon(){
     if(tray_icon){
         tip("显示托盘图标")
         Menu, Tray, Icon
+        Menu, Tray, Rename, 显示图标, 隐藏图标
     }else{
         tip("隐藏托盘图标")
         Menu, Tray, NoIcon
+        Menu, Tray, Rename, 隐藏图标, 显示图标
+    }
+}
+; 临时禁用
+suspend_toggle(){
+    Suspend, Toggle
+    if(A_IsSuspended){
+        tip("脚本挂起")
+        Menu, tray, Check, 临时禁用〔Win+Caps〕
+    }else{
+        tip("取消挂起")
+        Menu, tray, Check, 临时禁用〔Win+Caps〕
     }
 }
 ; 改变CapsLock模式是否可用
@@ -52,34 +64,7 @@ enable_disable_caps_mode(){
     }
     Return
 }
-; 开关数字锁
-switch_num_lock(){
-    global
-    num_lock:= not num_lock
-    if(num_lock){
-        tip("数字锁开启")
-        Menu, Tray, Check, 3&
-    }else{
-        tip("数字锁关闭")
-        ; 同时关闭严格数字锁
-        strict_num_lock:=0
-        Menu, Tray, UnCheck, 3&
-    }
-}
-; 数字锁严格模式
-switch_strict_num_lock(){
-    global
-    strict_num_lock:= not strict_num_lock
-    if(strict_num_lock){
-        tip("开启数字锁严格模式")
-        ; 同时开启数字锁
-        num_lock:=1
-        Menu, Tray, Check, 3&
-    }else{
-        tip("关闭数字锁严格模式")
-    }
-    Return
-}
+
 ; 检查是否开机自启
 check_start_poweron(){
     RegRead, out, HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run, HamiCaps
@@ -114,21 +99,32 @@ Menu, Tray, Tip, HamiCaps正在运行
 Menu, status, add, 禁用Caps模式, enable_disable_caps_mode, +Radio
 
 Menu, Tray, add, 功能启用, :status
-Menu, Tray, add, 显或隐图标〔Win+Caps〕, show_hide_icon
-Menu, Tray, add, 开关数字锁〔Caps+/〕, switch_num_lock
+Menu, Tray, add, 显示图标, show_hide_icon
+Menu, Tray, add, 临时禁用〔Win+Caps〕, suspend_toggle
 Menu, Tray, add ; 分隔线
 Menu, Tray, add, 开机自启, start_app_when_poweron
 Menu, Tray, add, 重载程序〔Caps+`` 〕, reload_app
 Menu, Tray, add, 退出〔Caps+Q〕, exit_app
 
-; 判断是否需要显示托盘图标
+; 初始化托盘图标
 if(tray_icon){
     Menu, Tray, Icon
+    Menu, Tray, Rename, 显示图标, 隐藏图标
+}else{
+    Menu, Tray, Rename, 隐藏图标, 显示图标
 }
+
 check_start_poweron()
 ;Win+capsLock 控制托盘图标显示
 #CapsLock::
-    show_hide_icon()
+    Suspend, Toggle
+    if(A_IsSuspended){
+        tip("脚本挂起")
+        Menu, tray, Check, 临时禁用〔Win+Caps〕
+    }else{
+        tip("取消挂起")
+        Menu, tray, Check, 临时禁用〔Win+Caps〕
+    }
 Return
 ;;;;;;;;;;;;CapsLock模式;;;;;;;;;;;;;;
 ; 单击CapsLock无效果
@@ -232,15 +228,7 @@ $\::Insert
 $Enter::
     send, {End}{Enter}
 Return
-; 开启数字锁
-$/::
-    switch_num_lock()
-Return
-; 数字锁严格模式
-$!/::
-    SendSuppressedKeyUp("Alt")
-    switch_strict_num_lock()
-Return
+
 ; 清空所有内容
 $r::
     Send, ^a{Delete}
@@ -323,110 +311,6 @@ $`::
 return
 #IF
 
-;;;;;;;数字锁开启;;;;;;;;;;;;;
-#IF num_lock
-$1::
-if(strict_num_lock){
-    Send, {Text}!
-}else{
-    Send, +1
-}
-Return
-$+1::
-    Send, {Blind}{Text}1
-Return
-$2::
-    if(strict_num_lock){
-        Send, {Text}@
-    }else{
-        Send, +2
-    }
-Return
-$+2::
-    Send, {Blind}{Text}2
-Return
-$3::
-    if(strict_num_lock){
-        Send, {Text}#
-    }else{
-        Send, +3
-    }
-Return
-$+3::
-    Send, {Blind}{Text}3
-Return
-$4::
-    if(strict_num_lock){
-        Send, {Text}$
-    }else{
-        Send, +4
-    }
-Return
-$+4::
-    Send, {Blind}{Text}4
-Return
-$5::
-    if(strict_num_lock){
-        Send, {Text}`%
-    }else{
-        Send, +5
-    }
-Return
-$+5::
-    Send, {Blind}{Text}5
-Return
-$6::
-    if(strict_num_lock){
-        Send, {Text}^
-    }else{
-        Send, +6
-    }
-Return
-$+6::
-    Send, {Blind}{Text}6
-Return
-$7::
-    if(strict_num_lock){
-        Send, {Text}&
-    }else{
-        Send, +7
-    }
-Return
-$+7::
-    Send, {Blind}{Text}7
-Return
-$8::
-    if(strict_num_lock){
-        Send, {Text}*
-    }else{
-        Send, +8
-    }
-Return
-$+8::
-    Send, {Blind}{Text}8
-Return
-$9::
-    if(strict_num_lock){
-        Send, {Text}(
-    }else{
-        Send, +9
-    }
-Return
-$+9::
-    Send, {Blind}{Text}9
-Return
-$0::
-    if(strict_num_lock){
-        Send, {Text})
-    }else{
-        Send, +0
-    }
-Return
-$+0::
-    Send, {Blind}{Text}0
-Return
-#IF
-
 ;;;;;;;; / 快捷命令 ;;;;;;;;;
 ; / 是否按下
 i_click_down:=0
@@ -439,13 +323,35 @@ $/::
     }
 Return
 #IF i_click_down
+
 $c::Run CMD
 $e::Run explorer
 $b:: Run https://www.baidu.com
 $n:: Run notepad
 $m:: Run mspaint
 #IF
-;;;;;;;;鼠标停留在任务栏时，可使用滚轮调节音量;;;;;;;;;;
+
+;;;;;;;分号引导快捷符号;;;;;;;;
+semi_click_down:=0
+$;::
+semi_click_down:=1
+KeyWait, `;
+semi_click_down:=0
+if(A_ThisHotkey = "$;" and A_TimeSinceThisHotkey <= 300){
+Send, {;}
+}
+Return
+
+#IF semi_click_down
+
+$a::Send {!}
+$s::Send {^}
+$d::Send {\}
+$f::Send {Text}``````
+$e::Send {(}
+$r::Send {)}
+#IF
+    ;;;;;;;;鼠标停留在任务栏时，可使用滚轮调节音量;;;;;;;;;;
 #IF mouse_over_task()
     $WheelUp::Volume_Up
 $WheelDown::Volume_Down
