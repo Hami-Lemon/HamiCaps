@@ -48,7 +48,7 @@ suspend_toggle(){
         Menu, tray, Check, 临时禁用〔Win+Caps〕
     }else{
         tip("取消挂起")
-        Menu, tray, Check, 临时禁用〔Win+Caps〕
+        Menu, tray, UnCheck, 临时禁用〔Win+Caps〕
     }
 }
 ; 改变CapsLock模式是否可用
@@ -123,7 +123,7 @@ check_start_poweron()
         Menu, tray, Check, 临时禁用〔Win+Caps〕
     }else{
         tip("取消挂起")
-        Menu, tray, Check, 临时禁用〔Win+Caps〕
+        Menu, tray, UnCheck, 临时禁用〔Win+Caps〕
     }
 Return
 ;;;;;;;;;;;;CapsLock模式;;;;;;;;;;;;;;
