@@ -143,131 +143,31 @@ Return
 
 #IF caps_lock_down and caps_mode_enable
 
-; j,l,k,i 移动光标
-; 同时按下alt时，移动距离为2
-; $j::
-;     Send, {Left}
-; Return
-$j::Left
-$!j::
-    SendSuppressedKeyUp("Alt")
-    Send, {Left 2}
-return
-; $l::
-;     Send, {right}
-; Return
-$l::Right
-$!l::
-    SendSuppressedKeyUp("Alt")
-    Send, {right 2}
-return
-; $i::
-;     Send, {up}
-; Return
-$i::Up
-$!i::
-    SendSuppressedKeyUp("Alt")
-    Send, {up 2}
-return
-; $k::
-;     Send, {down}
-; Return
-$k::Down
-$!k::
-    SendSuppressedKeyUp("Alt")
-    Send, {down 2}
-return
-; 删除光标右侧内容
-$`;::
-Send, +{End}{Delete}
+; h j k l 移动光标（同vim)
+$j:: Down
 Return
-; 删除光标左侧内容
-$h::
-    Send, +{Home}{BackSpace}
+
+$l:: Right
 Return
-; 删除当前行内容
-$y::
-    Send, {Home}+{End}{Delete}{BackSpace}
+
+$k:: Up
 Return
-; pageup
-; $[::
-;     Send, {PgUP}
-; Return
-$[::PgUp
-; pagedown
-; $]::
-;     Send, {PgDn}
-; Return
-$]::PgDn
-; home
-; $,::
-;     Send, {Home}
-; Return
+
+$h:: Left
+Return
+
+; Home
 $,::Home
-; end
-; $.::
-;     Send, {End}
-; Return
+Return
+; End
 $.::End
-; ctrl + home
-$!,::
-    SendSuppressedKeyUp("Alt")
-    Send, ^{Home}
 Return
-; ctrl + end
-$!.::
-    SendSuppressedKeyUp("Alt")
-    Send, ^{End}
-Return
-; insert
-; $\::
-;     Send, {Insert}
-; Return
-$\::Insert
+
 ; 不影响当前行回车
 $Enter::
     send, {End}{Enter}
 Return
 
-; 清空所有内容
-$r::
-    Send, ^a{Delete}
-Return
-; delete
-; $v::
-;     Send, {Delete}
-; Return
-$v::Delete
-; backspace
-; $n::
-;     Send, {BackSpace}
-; Return
-$n::BackSpace
-; 显示程序菜单
-$g::
-    Menu,Tray,Show
-Return
-; 鼠标左键
-; $u::
-;     Click Left D
-;     KeyWait, u
-;     Click Left U
-;Return
-$u::LButton
-; 鼠标右键
-; $p::
-;     Click Right D
-;     KeyWait, p
-;     Click Right U
-; Return
-$p::RButton
-; 鼠标中键
-; $'::
-;     Click Middle D
-;     KeyWait, '
-;     Click Middle U
-; Return
-$'::MButton
 ; 鼠标滚轮向上
 $w::
     Click WheelUp
@@ -276,31 +176,7 @@ Return
 $o::
     Click WheelDown
 Return
-; 鼠标移动
-$e::
-    mouse_up(mouse_move_speed)
-Return
-$d::
-    mouse_down(mouse_move_speed)
-Return
-$s::
-    mouse_left(mouse_move_speed)
-Return
-$f::
-    mouse_right(mouse_move_speed)
-Return
-$!e::
-    mouse_up(mouse_move_speed*4)
-Return
-$!d::
-    mouse_down(mouse_move_speed*4)
-Return
-$!s::
-    mouse_left(mouse_move_speed*4)
-Return
-$!f::
-    mouse_right(mouse_move_speed*4)
-Return
+
 ; 退出程序
 $q::
     exit_app()
@@ -308,27 +184,7 @@ Return
 ;重载程序
 $`::
     reload_app()
-return
-#IF
-
-;;;;;;;; / 快捷命令 ;;;;;;;;;
-; / 是否按下
-i_click_down:=0
-$/::
-    i_click_down:=1
-    KeyWait, /
-    i_click_down:=0
-    if(A_ThisHotkey = "$/" and A_TimeSinceThisHotkey <= 300){
-        Send, {/}
-    }
 Return
-#IF i_click_down
-
-$c::Run CMD
-$e::Run explorer
-$b:: Run https://www.baidu.com
-$n:: Run notepad
-$m:: Run mspaint
 #IF
 
 ;;;;;;;分号引导快捷符号;;;;;;;;
@@ -348,8 +204,6 @@ $a::Send {!}
 $s::Send {^}
 $d::Send {\}
 $f::Send {Text}``````
-$e::Send {(}
-$r::Send {)}
 #IF
     ;;;;;;;;鼠标停留在任务栏时，可使用滚轮调节音量;;;;;;;;;;
 #IF mouse_over_task()
